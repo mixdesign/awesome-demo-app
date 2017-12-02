@@ -8,10 +8,21 @@ import UIKit
 import SnapKit
 import CHIPageControl
 import GrowingTextView
+import DynamicColor
+import RxSwift
 
 final class DesignPostView : UIView {
 
     let viewModel = DesignPostViewViewModel()
+    private let bag = DisposeBag()
+
+    private let containerView:UIView = {
+        let view = UIView()
+        view.backgroundColor = .white
+        view.layer.cornerRadius = 10
+        view.layer.masksToBounds = true
+        return view
+    }()
 
     private let cv:UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -59,7 +70,7 @@ final class DesignPostView : UIView {
         field.keyboardAppearance = .dark
         field.showsHorizontalScrollIndicator = false
         field.showsVerticalScrollIndicator = false
-        field.placeHolder = "Enter the title"
+        field.placeHolder = "Введите заголовок"
         field.placeHolderColor = .white
         field.trimWhiteSpaceWhenEndEditing = false
         field.minHeight = 40
@@ -80,13 +91,15 @@ final class DesignPostView : UIView {
         field.placeHolder = "0 ₸"
         field.placeHolderColor = .white
         field.trimWhiteSpaceWhenEndEditing = false
-        field.minHeight = 40
+        field.minHeight = 44
         field.maxLength = 15
         field.keyboardType = .numberPad
         return field
     }()
 
     fileprivate let pageControl = CHIPageControlChimayo()
+
+    private let badgesContainer = UIView()
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -105,6 +118,10 @@ final class DesignPostView : UIView {
 
     private func configEvents() {
         addFirstPhotoButton.isHidden = true // TODO: For testing
+
+        viewModel.badgeItems.asObservable().subscribe(onNext: { [weak self] (badges:[BadgeItem]) in
+            self?.createBadges(badges)
+        }).addDisposableTo(bag)
     }
 
     // MARK: Actions
@@ -115,15 +132,45 @@ final class DesignPostView : UIView {
 
     // MARK: UI
 
+    private func createBadges(_ badges:[BadgeItem]) {
+
+        // Clear previous badges
+        for subview in badgesContainer.subviews {
+            subview.removeFromSuperview()
+        }
+
+        var prevBadge:BadgeView? = nil
+        for item in badges {
+            let badgeView = BadgeView(text:item.title.uppercased())
+            badgeView.backgroundView.backgroundColor = item.backgroundColor
+            badgeView.textColor = item.titleColor
+            badgesContainer.addSubview(badgeView)
+
+            if prevBadge != nil {
+                // Next badge
+                badgeView.snp.makeConstraints { make in
+                    make.leading.equalTo(prevBadge!.snp.trailing).offset(7)
+                }
+            } else {
+                // First badge
+                badgeView.snp.makeConstraints { make in
+                    make.leading.equalToSuperview()
+                }
+            }
+
+            badgeView.snp.makeConstraints { make in
+                make.bottom.equalToSuperview()
+            }
+
+            prevBadge = badgeView
+        }
+    }
+
     private func configUI() {
 
         // Container view
         let padding = 11
 
-        let containerView = UIView()
-        containerView.backgroundColor = .white
-        containerView.layer.cornerRadius = 10
-        containerView.layer.masksToBounds = true
         self.addSubview(containerView)
         containerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -181,9 +228,9 @@ final class DesignPostView : UIView {
 
         priceTextField.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(fieldsMargin)
-            make.bottom.equalToSuperview().offset(-10)
+            make.bottom.equalToSuperview().offset(-7)
             make.trailing.equalToSuperview().offset(-fieldsMargin)
-            make.height.equalTo(40)
+            make.height.equalTo(44)
         }
 
         titleTextView.delegate = self
@@ -194,6 +241,16 @@ final class DesignPostView : UIView {
             make.trailing.equalToSuperview().offset(-20)
             titleTextViewHeightConstraint = make.height.equalTo(40)
         }
+
+        // Badges container
+        containerView.addSubview(badgesContainer)
+        badgesContainer.isUserInteractionEnabled = false
+        badgesContainer.snp.makeConstraints { make in
+            make.leading.equalTo(titleTextView).offset(5)
+            make.trailing.equalToSuperview()
+            make.bottom.equalTo(titleTextView.snp.top).offset(-1)
+            make.height.equalTo(25)
+        }
     }
 
 }
@@ -203,10 +260,8 @@ final class DesignPostView : UIView {
 extension DesignPostView : GrowingTextViewDelegate {
 
     func textViewDidChangeHeight(_ textView: GrowingTextView, height: CGFloat) {
+        // Update title text view height
         titleTextViewHeightConstraint.constraint.update(offset: height)
-//        UIView.animate(withDuration: 0.45) { () -> Void in
-//            textView.layoutIfNeeded()
-//        }
     }
 
 }

@@ -8,6 +8,7 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
 import DynamicColor
 import SnapKit
 
@@ -30,7 +31,8 @@ class DesignPostController: UIViewController {
     }
 
     private func configEvents() {
-
+        urgentSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isUrgent)
+        giveFreeSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isGiveFree)
     }
 
     // MARK: Actions
