@@ -50,7 +50,7 @@ class DesignPostController: UIViewController {
         // Pay Button
         let payButton = UIButton(type: .custom)
         payButton.addTarget(self, action: #selector(tapPay), for: .touchUpInside)
-        payButton.setTitle("Сохранить".uppercased(), for: .normal)
+        payButton.setTitle("Создать ✓".uppercased(), for: .normal)
         payButton.titleLabel?.font = .boldSystemFont(ofSize: 13)
         payButton.titleLabel?.setLetter(spacing: 1)
         payButton.backgroundColor = .appBlue

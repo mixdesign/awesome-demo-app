@@ -13,9 +13,12 @@ final class DesignPostViewViewModel {
 
     let margin:CGFloat = 15
     let titleFieldMaxLength = 70
+    let currencySymbol = "₸"
 
     var isUrgent = Variable<Bool>(false)
     var isGiveFree = Variable<Bool>(false)
+    var postTitle = Variable<String>("")
+    var price = Variable<String>("")
     var badgeItems = Variable<[BadgeItem]>([])
 
     init() {

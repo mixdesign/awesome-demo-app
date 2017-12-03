@@ -15,8 +15,10 @@
 		5200B646A998E8BAF40FC2E6 /* DesignPostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200BA19AC0EAEA94A017904 /* DesignPostController.swift */; };
 		5200B85E604B357BA5E7688B /* UILabelExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200BE19DF6C15507B4FB6BB /* UILabelExtensions.swift */; };
 		5200B86A38A0DAD6A570F7E0 /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B10CAC77B958A624503C /* BadgeView.swift */; };
+		5200B8E63B114354407E60FA /* NSObjectExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B1D1519A629070DB58B5 /* NSObjectExtensions.swift */; };
 		5200BC20453D532443B6877D /* DeviceUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200BA872DD50454198715AB /* DeviceUtils.swift */; };
 		5200BC230835A03FDA97EF50 /* UIColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B08A119FDA3144EB59B2 /* UIColorExtensions.swift */; };
+		5200BDAE38F885ECEE595059 /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B23650CF317352211CB0 /* IntExtensions.swift */; };
 		5200BE09205073D191642873 /* DesignPostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200BFA9547893ECED866CBC /* DesignPostView.swift */; };
 		5200BE39AE475BAA3572F471 /* PostsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B34BFDC74F2D12945BED /* PostsController.swift */; };
 		5200BF1FE0FBF06467CF1316 /* TitleSwitchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B48C50D7BCCC3A51022B /* TitleSwitchView.swift */; };
@@ -30,6 +32,8 @@
 		5200B08A119FDA3144EB59B2 /* UIColorExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtensions.swift; sourceTree = "<group>"; };
 		5200B10CAC77B958A624503C /* BadgeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
 		5200B15036D9751C364B806A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = EasySell/Base.lproj/LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
+		5200B1D1519A629070DB58B5 /* NSObjectExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSObjectExtensions.swift; sourceTree = "<group>"; };
+		5200B23650CF317352211CB0 /* IntExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntExtensions.swift; sourceTree = "<group>"; };
 		5200B34BFDC74F2D12945BED /* PostsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsController.swift; sourceTree = "<group>"; };
 		5200B48C50D7BCCC3A51022B /* TitleSwitchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleSwitchView.swift; sourceTree = "<group>"; };
 		5200B75B2DBB52D4B0B21F32 /* DesignPostViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesignPostViewModel.swift; sourceTree = "<group>"; };
@@ -136,6 +140,8 @@
 			children = (
 				5200BE19DF6C15507B4FB6BB /* UILabelExtensions.swift */,
 				5200B08A119FDA3144EB59B2 /* UIColorExtensions.swift */,
+				5200B1D1519A629070DB58B5 /* NSObjectExtensions.swift */,
+				5200B23650CF317352211CB0 /* IntExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -343,6 +349,8 @@
 				5200B1F5B2D3C7EDFD535E85 /* DesignPostViewViewModel.swift in Sources */,
 				5200BC20453D532443B6877D /* DeviceUtils.swift in Sources */,
 				5200B86A38A0DAD6A570F7E0 /* BadgeView.swift in Sources */,
+				5200B8E63B114354407E60FA /* NSObjectExtensions.swift in Sources */,
+				5200BDAE38F885ECEE595059 /* IntExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

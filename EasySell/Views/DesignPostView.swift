@@ -10,6 +10,7 @@ import CHIPageControl
 import GrowingTextView
 import DynamicColor
 import RxSwift
+import RxCocoa
 
 final class DesignPostView : UIView {
 
@@ -79,7 +80,7 @@ final class DesignPostView : UIView {
 
     fileprivate var titleTextViewHeightConstraint:ConstraintMakerEditable!
 
-    private let priceTextField:GrowingTextView = {
+    private let priceTextView:GrowingTextView = {
         let field = GrowingTextView()
         field.backgroundColor = .clear
         field.font = .boldSystemFont(ofSize: 22)
@@ -119,9 +120,62 @@ final class DesignPostView : UIView {
     private func configEvents() {
         addFirstPhotoButton.isHidden = true // TODO: For testing
 
+        // Price
+        titleTextView.rx.text.map{$0!}.bind(to: viewModel.postTitle)
+        priceTextView.rx.text.map{$0!}.bind(to: viewModel.price)
+
+        viewModel.postTitle.asObservable().subscribe(onNext: { [weak self] (title:String) in
+//            print("\(title)")
+        }).addDisposableTo(bag)
+
+        // Subscribe to on price text view value change.
+        viewModel.price.asObservable().distinctUntilChanged().subscribe(onNext: { [weak self] (price:String) in
+
+            guard let _self = self else { return }
+
+            if price == "" {
+                self?.priceTextView.text = ""
+            } else {
+                // Sanitize the price value
+                var newPrice = price.replacingOccurrences(of: " ", with: "")
+                        .replacingOccurrences(of: _self.viewModel.currencySymbol, with: "")
+                        .trimmingCharacters(in: .whitespaces)
+
+                // Format as thousands separator.
+                // This approach also prevents entering the invalid number like "00 ₸", which is automatically converted to "0 ₸"
+                guard let intPrice = Int(newPrice) else {
+                    self?.priceTextView.text = ""
+                    return
+                }
+                newPrice = intPrice.formattedWithSeparator
+
+                self?.priceTextView.text = "\(newPrice) \(_self.viewModel.currencySymbol)"
+
+                // Calculate the cursor position, two positions back from the end before the " ₸".
+                self?.priceFieldPositionCursor()
+            }
+
+        }).addDisposableTo(bag)
+
+        // Badges
         viewModel.badgeItems.asObservable().subscribe(onNext: { [weak self] (badges:[BadgeItem]) in
             self?.createBadges(badges)
         }).addDisposableTo(bag)
+
+//        viewModel.price.value = "123"
+    }
+
+    fileprivate func priceFieldPositionCursor() {
+        //
+        var position: Int = priceTextView.text.count - 2
+        if position >= 0 {
+            if position == 0 {
+                position = 1
+            }
+            if let newPosition = priceTextView.position(from: priceTextView.beginningOfDocument, offset: position) {
+                priceTextView.selectedTextRange = priceTextView.textRange(from: newPosition, to: newPosition)
+            }
+        }
     }
 
     // MARK: Actions
@@ -224,9 +278,10 @@ final class DesignPostView : UIView {
         let fieldsMargin = 15
 
         containerView.addSubview(titleTextView)
-        containerView.addSubview(priceTextField)
+        containerView.addSubview(priceTextView)
 
-        priceTextField.snp.makeConstraints { make in
+        priceTextView.delegate = self
+        priceTextView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(fieldsMargin)
             make.bottom.equalToSuperview().offset(-7)
             make.trailing.equalToSuperview().offset(-fieldsMargin)
@@ -236,8 +291,8 @@ final class DesignPostView : UIView {
         titleTextView.delegate = self
         titleTextView.maxLength = viewModel.titleFieldMaxLength
         titleTextView.snp.makeConstraints { make in
-            make.leading.equalTo(priceTextField)
-            make.bottom.equalTo(priceTextField.snp.top).offset(5)
+            make.leading.equalTo(priceTextView)
+            make.bottom.equalTo(priceTextView.snp.top).offset(5)
             make.trailing.equalToSuperview().offset(-20)
             titleTextViewHeightConstraint = make.height.equalTo(40)
         }
@@ -258,6 +313,14 @@ final class DesignPostView : UIView {
 // MARK: UITextView
 
 extension DesignPostView : GrowingTextViewDelegate {
+
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        delay(0.05) {
+            self.priceFieldPositionCursor()
+        }
+    }
+
+    // MARK: GrowingTextView
 
     func textViewDidChangeHeight(_ textView: GrowingTextView, height: CGFloat) {
         // Update title text view height
