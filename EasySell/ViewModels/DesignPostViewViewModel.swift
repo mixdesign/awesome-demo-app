@@ -7,25 +7,44 @@ import Foundation
 import CoreGraphics
 import RxSwift
 
+private enum BadgeType:String {
+    case urgent = "Срочно"
+    case giveFree = "Отдам даром"
+}
+
+struct BadgeItem {
+    let title:String
+    let titleColor:UIColor
+    let backgroundColor:UIColor
+
+    init(title:String, titleColor:UIColor, backgroundColor:UIColor) {
+        self.title = title
+        self.titleColor = titleColor
+        self.backgroundColor = backgroundColor
+    }
+}
+
 final class DesignPostViewViewModel {
 
     private let bag = DisposeBag()
 
     let margin:CGFloat = 15
     let postPadding:CGFloat = 11
-    let titleFieldMaxLength = 70
+    let postTitleMaxLength = 70
     let currencySymbol = "₸"
 
     var isPreview = Variable<Bool>(false)
     var isTitleEditing = Variable<Bool>(false)
     var isUrgent = Variable<Bool>(false)
     var isGiveFree = Variable<Bool>(false)
+    var hasAtLeastOnePhoto = Variable<Bool>(false)
     var postTitle = Variable<String>("")
     var price = Variable<String>("")
     var badgeItems = Variable<[BadgeItem]>([])
+    var photos = Variable<[UIImage]>([])
 
     var titleLengthIndicatorText:String {
-        return "\(titleFieldMaxLength - self.postTitle.value.count)"
+        return "\(postTitleMaxLength - self.postTitle.value.count)"
     }
 
     init() {
@@ -46,6 +65,11 @@ final class DesignPostViewViewModel {
             }
         }).addDisposableTo(bag)
 
+        // Is photo added
+        photos.asObservable().subscribe(onNext: { [weak self] (photos:[UIImage]) in
+            self?.hasAtLeastOnePhoto.value = photos.count > 0
+        }).addDisposableTo(bag)
+
     }
 
     // MARK: Helper
@@ -57,22 +81,5 @@ final class DesignPostViewViewModel {
                 break
             }
         }
-    }
-}
-
-private enum BadgeType:String {
-    case urgent = "Срочно"
-    case giveFree = "Отдам даром"
-}
-
-struct BadgeItem {
-    let title:String
-    let titleColor:UIColor
-    let backgroundColor:UIColor
-
-    init(title:String, titleColor:UIColor, backgroundColor:UIColor) {
-        self.title = title
-        self.titleColor = titleColor
-        self.backgroundColor = backgroundColor
     }
 }

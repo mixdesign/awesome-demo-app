@@ -58,7 +58,7 @@ final class DesignPostView : UIView {
         button.addTarget(self, action: #selector(tapAddPhoto), for: .touchUpInside)
         button.setImage(UIImage(named: "add-photo-button"), for: .normal)
         button.showsTouchWhenHighlighted = true
-//        button.isHidden = true
+        button.isHidden = true
         return button
     }()
 
@@ -72,13 +72,10 @@ final class DesignPostView : UIView {
         field.showsHorizontalScrollIndicator = false
         field.showsVerticalScrollIndicator = false
         field.placeHolder = "Введите заголовок"
-        field.placeHolderColor = .white
         field.trimWhiteSpaceWhenEndEditing = false
         field.minHeight = 40
         return field
     }()
-
-    fileprivate var titleTextViewHeightConstraint:ConstraintMakerEditable!
 
     fileprivate let priceTextView:GrowingTextView = {
         let field = GrowingTextView()
@@ -90,7 +87,6 @@ final class DesignPostView : UIView {
         field.showsHorizontalScrollIndicator = false
         field.showsVerticalScrollIndicator = false
         field.placeHolder = "0 ₸"
-        field.placeHolderColor = .white
         field.trimWhiteSpaceWhenEndEditing = false
         field.minHeight = 44
         field.maxLength = 15
@@ -98,11 +94,13 @@ final class DesignPostView : UIView {
         return field
     }()
 
-    fileprivate let pageControl = CHIPageControlChimayo()
-
+    fileprivate var pageControl:CHIPageControlChimayo? = nil
     private let badgesContainer = UIView()
-
     private var titleLengthIndicator:BadgeView?
+
+    // Constraints
+    fileprivate var titleTextViewHeightConstraint:ConstraintMakerEditable!
+
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -120,19 +118,28 @@ final class DesignPostView : UIView {
     }
 
     private func configEvents() {
-        addFirstPhotoButton.isHidden = true // TODO: For testing
 
         // Title & Price
-        titleTextView.rx.text.map{$0!}.bind(to: viewModel.postTitle)
-        priceTextView.rx.text.map{$0!}.bind(to: viewModel.price)
+        _ = titleTextView.rx.text.map{$0!}.bind(to: viewModel.postTitle)
+        _ = priceTextView.rx.text.map{$0!}.bind(to: viewModel.price)
 
+        // Post title change
         viewModel.postTitle.asObservable().skip(1).subscribe(onNext: { [weak self] (title:String) in
             guard let _self = self else { return }
             _self.titleLengthIndicator?.text = _self.viewModel.titleLengthIndicatorText
-            _self.titleLengthIndicator?.backgroundView.backgroundColor = title.count < _self.viewModel.titleFieldMaxLength ? .black : .red
+            _self.titleLengthIndicator?.backgroundView.backgroundColor = title.count < _self.viewModel.postTitleMaxLength ? .black : .red
+
         }).addDisposableTo(bag)
 
-        // Subscribe to on price text view value change.
+        // If user haven't added any photo yet, then
+        // hide addFirstPhotoButton & show addNextPhotoButton if title number of lines > 3
+        viewModel.postTitle.asObservable().filter{ $0.count >= 0 && !self.viewModel.hasAtLeastOnePhoto.value }.subscribe(onNext: { [weak self] (title:String) in
+            let lines3 = title.components(separatedBy: "\n").count > 2
+            self?.addFirstPhotoButton.isHidden = lines3
+            self?.addNextPhotoButton.isHidden = !lines3
+        }).addDisposableTo(bag)
+
+        // Price value change
         viewModel.price.asObservable().distinctUntilChanged().subscribe(onNext: { [weak self] (price:String) in
 
             guard let _self = self else { return }
@@ -172,6 +179,7 @@ final class DesignPostView : UIView {
                 guard let _self = self else { return }
                 self?.titleLengthIndicator = BadgeView(text: _self.viewModel.titleLengthIndicatorText)
                 self?.titleLengthIndicator?.horizontalPadding = 4
+                self?.titleLengthIndicator?.alpha = 0.7
                 _self.containerView.addSubview(_self.titleLengthIndicator!)
                 self?.titleLengthIndicator?.snp.makeConstraints { make in
                     make.leading.top.equalToSuperview().offset(_self.viewModel.postPadding)
@@ -181,9 +189,48 @@ final class DesignPostView : UIView {
             }
         }).addDisposableTo(bag)
 
+        // Photos
+        viewModel.photos.asObservable().subscribe(onNext: { [weak self] (photos:[UIImage]) in
+
+            self?.cv.reloadData()
+
+            let hasPhoto = photos.count > 0
+
+            // Page control
+            if photos.count > 1 {
+                self?.createPageControl()
+            } else {
+                self?.pageControl?.removeFromSuperview()
+            }
+
+            // Do not show the slider fader if no photo yet.
+            self?.faderView.isHidden = !hasPhoto
+
+            // Text views placeholder color
+            var textViewColor = UIColor.white
+            var placeholderColor = UIColor.white
+            if !hasPhoto {
+                textViewColor = .appGray
+                placeholderColor = UIColor(hexString: "D0D7E2")
+            }
+            self?.titleTextView.textColor = textViewColor
+            self?.priceTextView.textColor = textViewColor
+            self?.titleTextView.placeHolderColor = placeholderColor
+            self?.priceTextView.placeHolderColor = placeholderColor
+
+            // Add photo buttons
+            self?.addFirstPhotoButton.isHidden = hasPhoto
+            self?.addNextPhotoButton.isHidden = !hasPhoto
+
+        }).addDisposableTo(bag)
+
         // Preview
-        viewModel.isPreview.asObservable().subscribe(onNext: { [weak self] (isPreview:Bool) in
-            self?.pageControl.isHidden = isPreview
+        // Note: In DesignPostController `previewSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isPreview)`
+        // also triggers the isPreview signal.
+
+        viewModel.isPreview.asObservable().distinctUntilChanged().skip(1).subscribe(onNext: { [weak self] (isPreview:Bool) in
+            print("isPreview:\(isPreview)")
+            self?.pageControl?.isHidden = isPreview
             self?.addNextPhotoButton.isHidden = isPreview
         }).addDisposableTo(bag)
     }
@@ -243,6 +290,21 @@ final class DesignPostView : UIView {
         }
     }
 
+    private func createPageControl() {
+        if pageControl != nil { return }
+        // Page control
+        pageControl = CHIPageControlChimayo()
+        pageControl?.tintColor = UIColor.appGray
+        pageControl?.inactiveTransparency = 0.2
+        pageControl?.currentPageTintColor = .appBlueLight
+        pageControl?.radius = 3
+        containerView.addSubview(pageControl!)
+        pageControl?.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(self.viewModel.postPadding)
+            make.centerX.equalToSuperview()
+        }
+    }
+
     private func configUI() {
 
         // Container view
@@ -270,31 +332,6 @@ final class DesignPostView : UIView {
             make.leading.trailing.bottom.equalToSuperview()
         }
 
-        // Controls ---
-
-        containerView.addSubview(addFirstPhotoButton)
-        addFirstPhotoButton.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
-
-        containerView.addSubview(addNextPhotoButton)
-        addNextPhotoButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(self.viewModel.postPadding)
-            make.trailing.equalToSuperview().offset(-self.viewModel.postPadding)
-        }
-
-        // Page control
-        pageControl.numberOfPages = 3
-        pageControl.tintColor = UIColor.appGray
-        pageControl.inactiveTransparency = 0.2
-        pageControl.currentPageTintColor = .appBlueLight
-        pageControl.radius = 3
-        containerView.addSubview(pageControl)
-        pageControl.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(self.viewModel.postPadding)
-            make.centerX.equalToSuperview()
-        }
-
         // Input fields
         let fieldsMargin = 15
 
@@ -310,12 +347,25 @@ final class DesignPostView : UIView {
         }
 
         titleTextView.delegate = self
-        titleTextView.maxLength = viewModel.titleFieldMaxLength
+        titleTextView.maxLength = viewModel.postTitleMaxLength
         titleTextView.snp.makeConstraints { make in
             make.leading.equalTo(priceTextView)
             make.bottom.equalTo(priceTextView.snp.top).offset(5)
             make.trailing.equalToSuperview().offset(-20)
             titleTextViewHeightConstraint = make.height.equalTo(40)
+        }
+
+        // Controls ---
+
+        containerView.insertSubview(addFirstPhotoButton, belowSubview: titleTextView)
+        addFirstPhotoButton.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+
+        containerView.addSubview(addNextPhotoButton)
+        addNextPhotoButton.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(self.viewModel.postPadding)
+            make.trailing.equalToSuperview().offset(-self.viewModel.postPadding)
         }
 
         // Badges container
@@ -369,9 +419,11 @@ extension DesignPostView : UICollectionViewDelegate, UICollectionViewDataSource,
     // MARK: UIScrollView
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let total = scrollView.contentSize.width - scrollView.bounds.width
-        let offset = scrollView.contentOffset.x
-        pageControl.progress = Double(offset / total) * Double(pageControl.numberOfPages - 1)
+        if let control = pageControl {
+            let total = scrollView.contentSize.width - scrollView.bounds.width
+            let offset = scrollView.contentOffset.x
+            control.progress = Double(offset / total) * Double(control.numberOfPages - 1)
+        }
     }
 
     // MARK: CollectionView
@@ -381,12 +433,12 @@ extension DesignPostView : UICollectionViewDelegate, UICollectionViewDataSource,
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return viewModel.photos.value.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCollectionCell", for: indexPath) as! PostPhotoCollectionCell
-        cell.setPhoto(UIImage(named: "test-photo"))
+        cell.setPhoto(viewModel.photos.value[indexPath.row])
         return cell
     }
 
