@@ -8,14 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		2C591ABAD7861197D7D5AAC7 /* Pods_EasySell.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8044496AD30DF927FB867F66 /* Pods_EasySell.framework */; };
+		5200B02D65D6670EDAE58408 /* PostPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B9F3CC70A8772C12E118 /* PostPhoto.swift */; };
+		5200B089E8863799CA0B1150 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B090247457D72FFEC0D7 /* Constants.swift */; };
 		5200B10DB5DEDB8262F3B028 /* DesignPostViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B75B2DBB52D4B0B21F32 /* DesignPostViewModel.swift */; };
+		5200B191D4265AC3C24DF397 /* PostsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B8A77B31CBE814E7B0AF /* PostsViewModel.swift */; };
 		5200B1F5B2D3C7EDFD535E85 /* DesignPostViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200BE9957E10A113D65852A /* DesignPostViewViewModel.swift */; };
 		5200B1F7BF02D1CEA8514A93 /* PostPhotoCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200BCD7D7164B62DA28A66D /* PostPhotoCollectionCell.swift */; };
 		5200B373B09C15F04B91182A /* IconTitleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200BBD8180F4FA2B95E8518 /* IconTitleButton.swift */; };
 		5200B646A998E8BAF40FC2E6 /* DesignPostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200BA19AC0EAEA94A017904 /* DesignPostController.swift */; };
+		5200B7C1C35387A58E1448E0 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B8DB412289E714F9D669 /* Post.swift */; };
 		5200B85E604B357BA5E7688B /* UILabelExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200BE19DF6C15507B4FB6BB /* UILabelExtensions.swift */; };
 		5200B86A38A0DAD6A570F7E0 /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B10CAC77B958A624503C /* BadgeView.swift */; };
 		5200B8E63B114354407E60FA /* NSObjectExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B1D1519A629070DB58B5 /* NSObjectExtensions.swift */; };
+		5200B916B5BA7381B34F0C7E /* PostTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200BD63C78242B8BF41D800 /* PostTableCell.swift */; };
 		5200BC20453D532443B6877D /* DeviceUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200BA872DD50454198715AB /* DeviceUtils.swift */; };
 		5200BC230835A03FDA97EF50 /* UIColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B08A119FDA3144EB59B2 /* UIColorExtensions.swift */; };
 		5200BDAE38F885ECEE595059 /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B23650CF317352211CB0 /* IntExtensions.swift */; };
@@ -23,6 +28,7 @@
 		5200BE39AE475BAA3572F471 /* PostsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B34BFDC74F2D12945BED /* PostsController.swift */; };
 		5200BF1FE0FBF06467CF1316 /* TitleSwitchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200B48C50D7BCCC3A51022B /* TitleSwitchView.swift */; };
 		5200BF2EC8EF15AC748F6CB9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5200BA54D172721BAB1317D8 /* LaunchScreen.storyboard */; };
+		5200BFB7D385006356379C4E /* RealmHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5200BF01309311D7A9CF6BB9 /* RealmHelper.swift */; };
 		CE97DF1F1FD19641002CF005 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE97DF1E1FD19641002CF005 /* AppDelegate.swift */; };
 		CE97DF261FD19641002CF005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE97DF251FD19641002CF005 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
@@ -30,6 +36,7 @@
 /* Begin PBXFileReference section */
 		278443DD5C84ADBC42AD53CB /* Pods-EasySell.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-EasySell.release.xcconfig"; path = "Pods/Target Support Files/Pods-EasySell/Pods-EasySell.release.xcconfig"; sourceTree = "<group>"; };
 		5200B08A119FDA3144EB59B2 /* UIColorExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtensions.swift; sourceTree = "<group>"; };
+		5200B090247457D72FFEC0D7 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		5200B10CAC77B958A624503C /* BadgeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
 		5200B15036D9751C364B806A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = EasySell/Base.lproj/LaunchScreen.storyboard; sourceTree = SOURCE_ROOT; };
 		5200B1D1519A629070DB58B5 /* NSObjectExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSObjectExtensions.swift; sourceTree = "<group>"; };
@@ -37,12 +44,17 @@
 		5200B34BFDC74F2D12945BED /* PostsController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsController.swift; sourceTree = "<group>"; };
 		5200B48C50D7BCCC3A51022B /* TitleSwitchView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TitleSwitchView.swift; sourceTree = "<group>"; };
 		5200B75B2DBB52D4B0B21F32 /* DesignPostViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesignPostViewModel.swift; sourceTree = "<group>"; };
+		5200B8A77B31CBE814E7B0AF /* PostsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostsViewModel.swift; sourceTree = "<group>"; };
+		5200B8DB412289E714F9D669 /* Post.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
+		5200B9F3CC70A8772C12E118 /* PostPhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostPhoto.swift; sourceTree = "<group>"; };
 		5200BA19AC0EAEA94A017904 /* DesignPostController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesignPostController.swift; sourceTree = "<group>"; };
 		5200BA872DD50454198715AB /* DeviceUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceUtils.swift; sourceTree = "<group>"; };
 		5200BBD8180F4FA2B95E8518 /* IconTitleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IconTitleButton.swift; sourceTree = "<group>"; };
 		5200BCD7D7164B62DA28A66D /* PostPhotoCollectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostPhotoCollectionCell.swift; sourceTree = "<group>"; };
+		5200BD63C78242B8BF41D800 /* PostTableCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PostTableCell.swift; sourceTree = "<group>"; };
 		5200BE19DF6C15507B4FB6BB /* UILabelExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UILabelExtensions.swift; sourceTree = "<group>"; };
 		5200BE9957E10A113D65852A /* DesignPostViewViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesignPostViewViewModel.swift; sourceTree = "<group>"; };
+		5200BF01309311D7A9CF6BB9 /* RealmHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RealmHelper.swift; sourceTree = "<group>"; };
 		5200BFA9547893ECED866CBC /* DesignPostView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DesignPostView.swift; sourceTree = "<group>"; };
 		8044496AD30DF927FB867F66 /* Pods_EasySell.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_EasySell.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE97DF1B1FD19641002CF005 /* EasySell.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EasySell.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -85,6 +97,8 @@
 			isa = PBXGroup;
 			children = (
 				5200BA872DD50454198715AB /* DeviceUtils.swift */,
+				5200BF01309311D7A9CF6BB9 /* RealmHelper.swift */,
+				5200B090247457D72FFEC0D7 /* Constants.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -102,14 +116,25 @@
 			children = (
 				5200B75B2DBB52D4B0B21F32 /* DesignPostViewModel.swift */,
 				5200BE9957E10A113D65852A /* DesignPostViewViewModel.swift */,
+				5200B8A77B31CBE814E7B0AF /* PostsViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		5200B7D18BDEA14267466987 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5200B8DB412289E714F9D669 /* Post.swift */,
+				5200B9F3CC70A8772C12E118 /* PostPhoto.swift */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 		5200B8678A12C2B079D209CD /* Cells */ = {
 			isa = PBXGroup;
 			children = (
 				5200BCD7D7164B62DA28A66D /* PostPhotoCollectionCell.swift */,
+				5200BD63C78242B8BF41D800 /* PostTableCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -176,6 +201,7 @@
 				5200B0095491F057AD8D0D79 /* Utils */,
 				5200B551E3A3BB8B6B07C7D6 /* Storyboards */,
 				5200BF8172670FE85E55F16D /* Extensions */,
+				5200B7D18BDEA14267466987 /* Models */,
 			);
 			path = EasySell;
 			sourceTree = "<group>";
@@ -353,6 +379,12 @@
 				5200B86A38A0DAD6A570F7E0 /* BadgeView.swift in Sources */,
 				5200B8E63B114354407E60FA /* NSObjectExtensions.swift in Sources */,
 				5200BDAE38F885ECEE595059 /* IntExtensions.swift in Sources */,
+				5200B916B5BA7381B34F0C7E /* PostTableCell.swift in Sources */,
+				5200BFB7D385006356379C4E /* RealmHelper.swift in Sources */,
+				5200B089E8863799CA0B1150 /* Constants.swift in Sources */,
+				5200B7C1C35387A58E1448E0 /* Post.swift in Sources */,
+				5200B02D65D6670EDAE58408 /* PostPhoto.swift in Sources */,
+				5200B191D4265AC3C24DF397 /* PostsViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

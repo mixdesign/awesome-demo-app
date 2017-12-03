@@ -207,9 +207,6 @@ final class DesignPostView : UIView {
         // Signal triggered only if first photo added or viewModel.photos becomes empty.
         viewModel.hasAtLeastOnePhoto.asObservable().distinctUntilChanged().subscribe(onNext: { [weak self] (hasPhoto:Bool) in
 
-            print("hasAtLeastOnePhoto: \(hasPhoto)")
-            guard let _self = self else { return }
-
             // Do not show the slider fader if no photo yet.
             self?.faderView.isHidden = !hasPhoto
 

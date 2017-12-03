@@ -19,8 +19,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         configAppearanceAndSettings()
 
+        // Realm
+        RealmHelper.setup()
+
         self.window = UIWindow()
-        self.window?.rootViewController = DesignPostController()
+//        self.window?.rootViewController = DesignPostController()
+        let nc = UINavigationController(rootViewController: PostsController())
+        nc.isNavigationBarHidden = true
+        self.window?.rootViewController = nc
         self.window?.frame = UIScreen.main.bounds
         self.window?.makeKeyAndVisible()
 

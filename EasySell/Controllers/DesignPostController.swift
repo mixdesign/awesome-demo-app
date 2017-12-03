@@ -45,8 +45,12 @@ class DesignPostController: UIViewController {
 
     // MARK: Actions
 
-    @objc private func tapPay() {
+    @objc private func tapCreate() {
 
+    }
+
+    @objc private func tapBack() {
+        self.navigationController?.popViewController(animated: true)
     }
 
     // MARK: UI
@@ -55,17 +59,32 @@ class DesignPostController: UIViewController {
     private func configUI() {
         self.view.backgroundColor = viewModel.noPhotoBackgroundColor
 
+        let buttonHeight:CGFloat = 44
+
+        // Back button
+        let backButton = UIButton(type: .custom)
+        backButton.addTarget(self, action: #selector(tapBack), for: .touchUpInside)
+        backButton.setTitle("←".uppercased(), for: .normal)
+        backButton.titleLabel?.font = .boldSystemFont(ofSize: 13)
+        backButton.backgroundColor = UIColor.appBlue.darkened(amount: 0.1)
+        self.view.addSubview(backButton)
+        backButton.snp.makeConstraints { make in
+            make.width.height.equalTo(buttonHeight)
+            make.leading.bottom.equalToSuperview()
+        }
+
         // Pay Button
         let payButton = UIButton(type: .custom)
-        payButton.addTarget(self, action: #selector(tapPay), for: .touchUpInside)
-        payButton.setTitle("Создать ✓".uppercased(), for: .normal)
+        payButton.addTarget(self, action: #selector(tapCreate), for: .touchUpInside)
+        payButton.setTitle("✓ Создать".uppercased(), for: .normal)
         payButton.titleLabel?.font = .boldSystemFont(ofSize: 13)
         payButton.titleLabel?.setLetter(spacing: 1)
         payButton.backgroundColor = .appBlue
         self.view.addSubview(payButton)
         payButton.snp.makeConstraints { make in
-            make.height.equalTo(44)
-            make.leading.trailing.bottom.equalToSuperview()
+            make.height.equalTo(buttonHeight)
+            make.leading.equalTo(backButton.snp.trailing)
+            make.trailing.bottom.equalToSuperview()
         }
 
         // Scroll View
@@ -128,6 +147,10 @@ class DesignPostController: UIViewController {
             make.top.equalTo(urgentSwitch)
             make.trailing.equalTo(postView.snp.trailing).offset(-controlsPadding)
         }
+    }
+
+    deinit {
+        print("DesignPostController deinit")
     }
 
 }
