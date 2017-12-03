@@ -12,10 +12,16 @@ import DynamicColor
 import RxSwift
 import RxCocoa
 
+protocol DesignPostViewDelegate : class {
+    func designPostViewAddPhotoTapped()
+}
+
 final class DesignPostView : UIView {
 
     let viewModel = DesignPostViewViewModel()
     private let bag = DisposeBag()
+
+    weak var delegate:DesignPostViewDelegate!
 
     private let containerView:UIView = {
         let view = UIView()
@@ -57,6 +63,15 @@ final class DesignPostView : UIView {
         let button = UIButton(type: .custom)
         button.addTarget(self, action: #selector(tapAddPhoto), for: .touchUpInside)
         button.setImage(UIImage(named: "add-photo-button"), for: .normal)
+        button.showsTouchWhenHighlighted = true
+        button.isHidden = true
+        return button
+    }()
+
+    private var deletePhotoButton:UIButton = {
+        let button = UIButton(type: .custom)
+        button.addTarget(self, action: #selector(deletePhoto), for: .touchUpInside)
+        button.setImage(UIImage(named: "delete-photo-button"), for: .normal)
         button.showsTouchWhenHighlighted = true
         button.isHidden = true
         return button
@@ -128,13 +143,12 @@ final class DesignPostView : UIView {
             guard let _self = self else { return }
             _self.titleLengthIndicator?.text = _self.viewModel.titleLengthIndicatorText
             _self.titleLengthIndicator?.backgroundView.backgroundColor = title.count < _self.viewModel.postTitleMaxLength ? .black : .red
-
         }).addDisposableTo(bag)
 
         // If user haven't added any photo yet, then
         // hide addFirstPhotoButton & show addNextPhotoButton if title number of lines > 3
         viewModel.postTitle.asObservable().filter{ $0.count >= 0 && !self.viewModel.hasAtLeastOnePhoto.value }.subscribe(onNext: { [weak self] (title:String) in
-            let lines3 = title.components(separatedBy: "\n").count > 2
+            let lines3 = title.components(separatedBy: "\n").count > 1
             self?.addFirstPhotoButton.isHidden = lines3
             self?.addNextPhotoButton.isHidden = !lines3
         }).addDisposableTo(bag)
@@ -179,7 +193,6 @@ final class DesignPostView : UIView {
                 guard let _self = self else { return }
                 self?.titleLengthIndicator = BadgeView(text: _self.viewModel.titleLengthIndicatorText)
                 self?.titleLengthIndicator?.horizontalPadding = 4
-                self?.titleLengthIndicator?.alpha = 0.7
                 _self.containerView.addSubview(_self.titleLengthIndicator!)
                 self?.titleLengthIndicator?.snp.makeConstraints { make in
                     make.leading.top.equalToSuperview().offset(_self.viewModel.postPadding)
@@ -190,18 +203,12 @@ final class DesignPostView : UIView {
         }).addDisposableTo(bag)
 
         // Photos
-        viewModel.photos.asObservable().subscribe(onNext: { [weak self] (photos:[UIImage]) in
 
-            self?.cv.reloadData()
+        // Signal triggered only if first photo added or viewModel.photos becomes empty.
+        viewModel.hasAtLeastOnePhoto.asObservable().distinctUntilChanged().subscribe(onNext: { [weak self] (hasPhoto:Bool) in
 
-            let hasPhoto = photos.count > 0
-
-            // Page control
-            if photos.count > 1 {
-                self?.createPageControl()
-            } else {
-                self?.pageControl?.removeFromSuperview()
-            }
+            print("hasAtLeastOnePhoto: \(hasPhoto)")
+            guard let _self = self else { return }
 
             // Do not show the slider fader if no photo yet.
             self?.faderView.isHidden = !hasPhoto
@@ -221,17 +228,41 @@ final class DesignPostView : UIView {
             // Add photo buttons
             self?.addFirstPhotoButton.isHidden = hasPhoto
             self?.addNextPhotoButton.isHidden = !hasPhoto
+            self?.deletePhotoButton.isHidden = !hasPhoto
+
+        }).addDisposableTo(bag)
+
+        // New photo appended or existing one removed.
+        viewModel.photos.asObservable().subscribe(onNext: { [weak self] (photos:[UIImage]) in
+
+            self?.cv.reloadData()
+
+            // Page control
+            if photos.count > 1 {
+                self?.createPageControl()
+            } else {
+                self?.pageControl?.removeFromSuperview()
+            }
+
+            self?.viewModel.hasAtLeastOnePhoto.value = photos.count > 0
+
+            // Set number of pages of page control.
+            self?.pageControl?.numberOfPages = photos.count
 
         }).addDisposableTo(bag)
 
         // Preview
         // Note: In DesignPostController `previewSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isPreview)`
         // also triggers the isPreview signal.
-
         viewModel.isPreview.asObservable().distinctUntilChanged().skip(1).subscribe(onNext: { [weak self] (isPreview:Bool) in
-            print("isPreview:\(isPreview)")
+            // Hide / Display controls
             self?.pageControl?.isHidden = isPreview
             self?.addNextPhotoButton.isHidden = isPreview
+            self?.deletePhotoButton.isHidden = isPreview
+
+            // Enable / disable text view's user interaction
+            self?.titleTextView.isUserInteractionEnabled = !isPreview
+            self?.priceTextView.isUserInteractionEnabled = !isPreview
         }).addDisposableTo(bag)
     }
 
@@ -251,7 +282,11 @@ final class DesignPostView : UIView {
     // MARK: Actions
 
     @objc private func tapAddPhoto() {
-        print("tapAddPhoto")
+       self.delegate.designPostViewAddPhotoTapped()
+    }
+
+    @objc private func deletePhoto() {
+        viewModel.deleteCurrentPhoto(at: getCurrentPhotoIndex())
     }
 
     // MARK: UI
@@ -292,15 +327,14 @@ final class DesignPostView : UIView {
 
     private func createPageControl() {
         if pageControl != nil { return }
-        // Page control
+
         pageControl = CHIPageControlChimayo()
-        pageControl?.tintColor = UIColor.appGray
-        pageControl?.inactiveTransparency = 0.2
-        pageControl?.currentPageTintColor = .appBlueLight
+        pageControl?.tintColor = .white
+        pageControl?.currentPageTintColor = .white
         pageControl?.radius = 3
         containerView.addSubview(pageControl!)
         pageControl?.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(self.viewModel.postPadding)
+            make.centerY.equalTo(addNextPhotoButton)
             make.centerX.equalToSuperview()
         }
     }
@@ -368,6 +402,12 @@ final class DesignPostView : UIView {
             make.trailing.equalToSuperview().offset(-self.viewModel.postPadding)
         }
 
+        containerView.addSubview(deletePhotoButton)
+        deletePhotoButton.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(self.viewModel.postPadding)
+            make.trailing.equalTo(self.addNextPhotoButton.snp.leading).offset(-self.viewModel.postPadding)
+        }
+
         // Badges container
         containerView.addSubview(badgesContainer)
         badgesContainer.isUserInteractionEnabled = false
@@ -377,6 +417,18 @@ final class DesignPostView : UIView {
             make.bottom.equalTo(titleTextView.snp.top).offset(-1)
             make.height.equalTo(25)
         }
+    }
+
+    // MARK: Helper
+
+    private func getCurrentPhotoIndex() -> Int {
+        let offset = cv.contentOffset.x
+
+        if offset == 0 {
+            return 0
+        }
+
+        return Int(floor(offset / cv.bounds.width))
     }
 
 }

@@ -20,12 +20,13 @@ target 'EasySell' do
   pod 'UIView+Positioning', '~> 1.5'
   pod 'CHIPageControl', '~> 0.1.3'
   pod 'GrowingTextView', '~> 0.5.3'
+  pod 'Fusuma'
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
       target.build_configurations.each do |config|
-          if ["RxSwift", "RxCocoa", "SwiftyAttributes", "Result"].include? target.name
+          if ["RxSwift", "RxCocoa", "SwiftyAttributes", "Result", "Fusuma"].include? target.name
             config.build_settings['SWIFT_VERSION'] = '3.0'
           else
             config.build_settings['SWIFT_VERSION'] = '4.0'

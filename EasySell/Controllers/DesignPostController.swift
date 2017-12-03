@@ -11,13 +11,14 @@ import RxSwift
 import RxCocoa
 import DynamicColor
 import SnapKit
+import Fusuma
 
 class DesignPostController: UIViewController {
 
     private let viewModel = DesignPostViewModel()
     private let bag = DisposeBag()
 
-    private let postView = DesignPostView()
+    fileprivate let postView = DesignPostView()
     private let urgentSwitch = TitleSwitchView()
     private let giveFreeSwitch = TitleSwitchView()
     private let previewSwitch = TitleSwitchView()
@@ -94,6 +95,7 @@ class DesignPostController: UIViewController {
         }
 
         // Post
+        postView.delegate = self
         contentView.addSubview(postView)
         postView.snp.makeConstraints { make in
             make.top.equalTo(titleLabel.snp.bottom).offset(15)
@@ -130,3 +132,44 @@ class DesignPostController: UIViewController {
 
 }
 
+// MARK: PostView
+
+extension DesignPostController : DesignPostViewDelegate {
+
+    func designPostViewAddPhotoTapped() {
+        let fusuma = FusumaViewController()
+        fusuma.delegate = self
+        fusuma.cropHeightRatio = 1.0
+        fusuma.allowMultipleSelection = true
+        self.present(fusuma, animated: true)
+    }
+
+}
+
+// MARK: Fusuma (Take photo, choose photo from photo gallery)
+
+extension DesignPostController : FusumaDelegate {
+    
+    func fusumaImageSelected(_ image: UIImage, source: FusumaMode) {
+        photosSelected(photos: [image])
+    }
+    
+    func fusumaMultipleImageSelected(_ images: [UIImage], source: FusumaMode) {
+        photosSelected(photos: images)
+    }
+    
+    func fusumaVideoCompleted(withFileURL fileURL: URL) {
+        print("Creating ads with video content is not available")
+    }
+    
+    func fusumaCameraRollUnauthorized() {
+        //
+    }
+
+    // MARK: Helper
+
+    private func photosSelected(photos:[UIImage]) {
+        postView.viewModel.photos.value.append(contentsOf: photos)
+    }
+
+}

@@ -72,6 +72,12 @@ final class DesignPostViewViewModel {
 
     }
 
+    func deleteCurrentPhoto(at index:Int) {
+        if photos.value.count == 0 { return }
+
+        photos.value.remove(at: index)
+    }
+
     // MARK: Helper
 
     private func removeBadge(with type: BadgeType) {
