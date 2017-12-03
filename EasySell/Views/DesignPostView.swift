@@ -126,7 +126,7 @@ final class DesignPostView : UIView {
         titleTextView.rx.text.map{$0!}.bind(to: viewModel.postTitle)
         priceTextView.rx.text.map{$0!}.bind(to: viewModel.price)
 
-        viewModel.postTitle.asObservable().subscribe(onNext: { [weak self] (title:String) in
+        viewModel.postTitle.asObservable().skip(1).subscribe(onNext: { [weak self] (title:String) in
             guard let _self = self else { return }
             _self.titleLengthIndicator?.text = _self.viewModel.titleLengthIndicatorText
             _self.titleLengthIndicator?.backgroundView.backgroundColor = title.count < _self.viewModel.titleFieldMaxLength ? .black : .red
@@ -167,7 +167,7 @@ final class DesignPostView : UIView {
         }).addDisposableTo(bag)
 
         // Title length indicator
-        viewModel.isTitleEditing.asObservable().subscribe(onNext: { [weak self] (editing:Bool) in
+        viewModel.isTitleEditing.asObservable().skip(1).subscribe(onNext: { [weak self] (editing:Bool) in
             if editing {
                 guard let _self = self else { return }
                 self?.titleLengthIndicator = BadgeView(text: _self.viewModel.titleLengthIndicatorText)
