@@ -12,14 +12,21 @@ final class DesignPostViewViewModel {
     private let bag = DisposeBag()
 
     let margin:CGFloat = 15
+    let postPadding:CGFloat = 11
     let titleFieldMaxLength = 70
     let currencySymbol = "₸"
 
+    var isPreview = Variable<Bool>(false)
+    var isTitleEditing = Variable<Bool>(false)
     var isUrgent = Variable<Bool>(false)
     var isGiveFree = Variable<Bool>(false)
     var postTitle = Variable<String>("")
     var price = Variable<String>("")
     var badgeItems = Variable<[BadgeItem]>([])
+
+    var titleLengthIndicatorText:String {
+        return "\(titleFieldMaxLength - self.postTitle.value.count)"
+    }
 
     init() {
 

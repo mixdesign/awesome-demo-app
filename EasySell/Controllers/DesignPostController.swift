@@ -31,6 +31,7 @@ class DesignPostController: UIViewController {
     }
 
     private func configEvents() {
+        previewSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isPreview)
         urgentSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isUrgent)
         giveFreeSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isGiveFree)
     }

@@ -58,11 +58,11 @@ final class DesignPostView : UIView {
         button.addTarget(self, action: #selector(tapAddPhoto), for: .touchUpInside)
         button.setImage(UIImage(named: "add-photo-button"), for: .normal)
         button.showsTouchWhenHighlighted = true
-        button.isHidden = true
+//        button.isHidden = true
         return button
     }()
 
-    private let titleTextView:GrowingTextView = {
+    fileprivate let titleTextView:GrowingTextView = {
         let field = GrowingTextView()
         field.backgroundColor = .clear
         field.font = .systemFont(ofSize: 20)
@@ -80,7 +80,7 @@ final class DesignPostView : UIView {
 
     fileprivate var titleTextViewHeightConstraint:ConstraintMakerEditable!
 
-    private let priceTextView:GrowingTextView = {
+    fileprivate let priceTextView:GrowingTextView = {
         let field = GrowingTextView()
         field.backgroundColor = .clear
         field.font = .boldSystemFont(ofSize: 22)
@@ -102,6 +102,8 @@ final class DesignPostView : UIView {
 
     private let badgesContainer = UIView()
 
+    private var titleLengthIndicator:BadgeView?
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         initView()
@@ -120,12 +122,14 @@ final class DesignPostView : UIView {
     private func configEvents() {
         addFirstPhotoButton.isHidden = true // TODO: For testing
 
-        // Price
+        // Title & Price
         titleTextView.rx.text.map{$0!}.bind(to: viewModel.postTitle)
         priceTextView.rx.text.map{$0!}.bind(to: viewModel.price)
 
         viewModel.postTitle.asObservable().subscribe(onNext: { [weak self] (title:String) in
-//            print("\(title)")
+            guard let _self = self else { return }
+            _self.titleLengthIndicator?.text = _self.viewModel.titleLengthIndicatorText
+            _self.titleLengthIndicator?.backgroundView.backgroundColor = title.count < _self.viewModel.titleFieldMaxLength ? .black : .red
         }).addDisposableTo(bag)
 
         // Subscribe to on price text view value change.
@@ -162,7 +166,26 @@ final class DesignPostView : UIView {
             self?.createBadges(badges)
         }).addDisposableTo(bag)
 
-//        viewModel.price.value = "123"
+        // Title length indicator
+        viewModel.isTitleEditing.asObservable().subscribe(onNext: { [weak self] (editing:Bool) in
+            if editing {
+                guard let _self = self else { return }
+                self?.titleLengthIndicator = BadgeView(text: _self.viewModel.titleLengthIndicatorText)
+                self?.titleLengthIndicator?.horizontalPadding = 4
+                _self.containerView.addSubview(_self.titleLengthIndicator!)
+                self?.titleLengthIndicator?.snp.makeConstraints { make in
+                    make.leading.top.equalToSuperview().offset(_self.viewModel.postPadding)
+                }
+            } else {
+                self?.titleLengthIndicator?.removeFromSuperview()
+            }
+        }).addDisposableTo(bag)
+
+        // Preview
+        viewModel.isPreview.asObservable().subscribe(onNext: { [weak self] (isPreview:Bool) in
+            self?.pageControl.isHidden = isPreview
+            self?.addNextPhotoButton.isHidden = isPreview
+        }).addDisposableTo(bag)
     }
 
     fileprivate func priceFieldPositionCursor() {
@@ -223,8 +246,6 @@ final class DesignPostView : UIView {
     private func configUI() {
 
         // Container view
-        let padding = 11
-
         self.addSubview(containerView)
         containerView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -258,8 +279,8 @@ final class DesignPostView : UIView {
 
         containerView.addSubview(addNextPhotoButton)
         addNextPhotoButton.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(padding)
-            make.trailing.equalToSuperview().offset(-padding)
+            make.top.equalToSuperview().offset(self.viewModel.postPadding)
+            make.trailing.equalToSuperview().offset(-self.viewModel.postPadding)
         }
 
         // Page control
@@ -270,7 +291,7 @@ final class DesignPostView : UIView {
         pageControl.radius = 3
         containerView.addSubview(pageControl)
         pageControl.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(padding)
+            make.top.equalToSuperview().offset(self.viewModel.postPadding)
             make.centerX.equalToSuperview()
         }
 
@@ -315,8 +336,20 @@ final class DesignPostView : UIView {
 extension DesignPostView : GrowingTextViewDelegate {
 
     func textViewDidBeginEditing(_ textView: UITextView) {
-        delay(0.05) {
-            self.priceFieldPositionCursor()
+        // Price text view
+        if textView == priceTextView {
+            delay(0.05) {
+                self.priceFieldPositionCursor()
+            }
+        } else if textView == titleTextView {
+            viewModel.isTitleEditing.value = true
+        }
+    }
+
+    func textViewDidEndEditing(_ textView: UITextView) {
+        // Price text view
+        if textView == titleTextView {
+            viewModel.isTitleEditing.value = false
         }
     }
 
