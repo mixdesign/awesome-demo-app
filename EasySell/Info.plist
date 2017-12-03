@@ -46,5 +46,7 @@
 	<false/>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need access to your photo library for creating the ad posts.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your photo library for creating the ad posts.</string>
 </dict>
 </plist>

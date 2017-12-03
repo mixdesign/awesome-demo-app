@@ -169,7 +169,9 @@ extension DesignPostController : FusumaDelegate {
     // MARK: Helper
 
     private func photosSelected(photos:[UIImage]) {
-        postView.viewModel.photos.value.append(contentsOf: photos)
+        var array = postView.viewModel.photos.value
+        array.append(contentsOf: photos)
+        postView.viewModel.photos.value = array
     }
 
 }
