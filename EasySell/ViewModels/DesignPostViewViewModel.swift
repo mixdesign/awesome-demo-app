@@ -38,6 +38,8 @@ final class DesignPostViewViewModel {
     var isUrgent = Variable<Bool>(false)
     var isGiveFree = Variable<Bool>(false)
     var hasAtLeastOnePhoto = Variable<Bool>(false)
+    var formValidated = Variable<Bool>(false)
+
     var postTitle = Variable<String>("")
     var price = Variable<String>("")
     var badgeItems = Variable<[BadgeItem]>([])
@@ -49,6 +51,7 @@ final class DesignPostViewViewModel {
 
     init() {
 
+        // Badge controls
         isUrgent.asObservable().skip(1).distinctUntilChanged().subscribe(onNext: { [weak self] (isOn:Bool) in
             if isOn {
                 self?.badgeItems.value.append(BadgeItem(title: BadgeType.urgent.rawValue.uppercased(), titleColor: .flatBlack, backgroundColor: UIColor(hexString: "F7C644")))
@@ -68,14 +71,28 @@ final class DesignPostViewViewModel {
         // Is photo added
         photos.asObservable().subscribe(onNext: { [weak self] (photos:[UIImage]) in
             self?.hasAtLeastOnePhoto.value = photos.count > 0
+            self?.updateFormValidated()
         }).addDisposableTo(bag)
 
+    }
+
+    // Return pure digits price value
+    func intPrice() -> Int {
+        if let value = Int(price.value.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: currencySymbol, with: "")) {
+            return value
+        }
+        return 0
     }
 
     func deleteCurrentPhoto(at index:Int) {
         if photos.value.count == 0 { return }
 
         photos.value.remove(at: index)
+    }
+
+    func updateFormValidated() {
+        // Form is validated -> If at least one photo added AND title is not empty
+        formValidated.value = hasAtLeastOnePhoto.value && !postTitle.value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     // MARK: Helper

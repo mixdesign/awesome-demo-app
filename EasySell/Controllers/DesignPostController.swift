@@ -12,17 +12,26 @@ import RxCocoa
 import DynamicColor
 import SnapKit
 import Fusuma
+import SVProgressHUD
+import RealmSwift
 
 class DesignPostController: UIViewController {
 
-    private let viewModel = DesignPostViewModel()
+    let viewModel = DesignPostViewModel()
     private let bag = DisposeBag()
+
+    var post:Post? = nil
 
     fileprivate let postView = DesignPostView()
     private let urgentSwitch = TitleSwitchView()
     private let giveFreeSwitch = TitleSwitchView()
     private let previewSwitch = TitleSwitchView()
 
+    private var actionButton:UIButton!
+
+    fileprivate var isNew:Bool {
+        return post == nil
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,21 +41,57 @@ class DesignPostController: UIViewController {
     }
 
     private func configEvents() {
-        previewSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isPreview)
-
-        urgentSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isUrgent)
-        giveFreeSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isGiveFree)
-
         postView.viewModel.hasAtLeastOnePhoto.asObservable().distinctUntilChanged().subscribe(onNext: { [weak self] (hasPhoto:Bool) in
-            print("hasPhoto:\(hasPhoto)")
             self?.previewSwitch.switchControl.isEnabled = hasPhoto
         }).addDisposableTo(bag)
+
+        // Enable create button if all required form fields filled.
+        postView.viewModel.formValidated.asObservable().distinctUntilChanged().subscribe(onNext: { [weak self] (validated:Bool) in
+            self?.actionButton.isEnabled = validated
+        }).addDisposableTo(bag)
+
+        // If post selected from the list.
+        if let post = post {
+            postView.setPostTitle(post.title)
+            postView.viewModel.price.value = "\(post.price)"
+
+            urgentSwitch.switchControl.isOn = post.isUrgent
+            giveFreeSwitch.switchControl.isOn = post.isGiveFree
+
+            // TODO: Optimize the performance
+            postView.viewModel.photos.value = post.photos.map { (photo: PostPhoto) -> UIImage in
+                return UIImage(data: photo.photoData)!
+            }
+        }
+
+        // Bind controls
+        _ = previewSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isPreview)
+        _ = urgentSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isUrgent)
+        _ = giveFreeSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isGiveFree)
     }
 
     // MARK: Actions
 
-    @objc private func tapCreate() {
+    @objc private func tapAction() {
+        SVProgressHUD.show(withStatus: "Saving")
+        viewModel.createPost(
+                postId: post?.postId,
+                title: postView.viewModel.postTitle.value,
+                price: postView.viewModel.intPrice(),
+                currency: postView.viewModel.currencySymbol,
+                photos: postView.viewModel.photos.value,
+                isUrgent: postView.viewModel.isUrgent.value,
+                isGiveFree: postView.viewModel.isGiveFree.value
+        ) { [weak self] error in
 
+            if error == nil {
+                SVProgressHUD.showSuccess(withStatus: "Saved!")
+                self?.navigationController?.popViewController(animated: true)
+            } else {
+                SVProgressHUD.dismiss()
+                UIHelper.alertError(message: error!.localizedDescription)
+            }
+        }
     }
 
     @objc private func tapBack() {
@@ -54,8 +99,7 @@ class DesignPostController: UIViewController {
     }
 
     // MARK: UI
-
-
+    
     private func configUI() {
         self.view.backgroundColor = viewModel.noPhotoBackgroundColor
 
@@ -65,7 +109,7 @@ class DesignPostController: UIViewController {
         let backButton = UIButton(type: .custom)
         backButton.addTarget(self, action: #selector(tapBack), for: .touchUpInside)
         backButton.setTitle("←".uppercased(), for: .normal)
-        backButton.titleLabel?.font = .boldSystemFont(ofSize: 13)
+        backButton.titleLabel?.font = .boldSystemFont(ofSize: 16)
         backButton.backgroundColor = UIColor.appBlue.darkened(amount: 0.1)
         self.view.addSubview(backButton)
         backButton.snp.makeConstraints { make in
@@ -74,14 +118,16 @@ class DesignPostController: UIViewController {
         }
 
         // Pay Button
-        let payButton = UIButton(type: .custom)
-        payButton.addTarget(self, action: #selector(tapCreate), for: .touchUpInside)
-        payButton.setTitle("✓ Создать".uppercased(), for: .normal)
-        payButton.titleLabel?.font = .boldSystemFont(ofSize: 13)
-        payButton.titleLabel?.setLetter(spacing: 1)
-        payButton.backgroundColor = .appBlue
-        self.view.addSubview(payButton)
-        payButton.snp.makeConstraints { make in
+        actionButton = UIButton(type: .custom)
+        actionButton.addTarget(self, action: #selector(tapAction), for: .touchUpInside)
+        actionButton.setTitle((isNew ? "Создать" : "Сохранить").uppercased(), for: .normal)
+        actionButton.titleLabel?.font = .boldSystemFont(ofSize: 14)
+        actionButton.titleLabel?.setLetter(spacing: 1)
+        actionButton.setTitleColor(.white, for: .normal)
+        actionButton.setTitleColor(UIColor.white.withAlphaComponent(0.3), for: .disabled)
+        actionButton.backgroundColor = .appBlue
+        self.view.addSubview(actionButton)
+        actionButton.snp.makeConstraints { make in
             make.height.equalTo(buttonHeight)
             make.leading.equalTo(backButton.snp.trailing)
             make.trailing.bottom.equalToSuperview()
@@ -95,7 +141,7 @@ class DesignPostController: UIViewController {
         self.view.addSubview(sv)
         sv.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(payButton.snp.top)
+            make.bottom.equalTo(actionButton.snp.top)
         }
 
         let contentView = UIView()

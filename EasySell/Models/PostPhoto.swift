@@ -8,6 +8,6 @@ import RealmSwift
 
 class PostPhoto : Object {
     dynamic var postId = ""
-    dynamic var photoData:Data?
+    dynamic var photoData:Data!
 }
 

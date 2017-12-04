@@ -37,11 +37,16 @@ final class PostTableCell : UITableViewCell {
     }
 
     func setPost(_ post:Post) {
-//        imageView.image = image
-        thumbnailView.image = UIImage(named: "test-photo")
-        titleLabel.text = "Selling the brand new MacbookPro 2017 512 GB"
+        titleLabel.text = post.title
         titleLabel.setLetter(spacing: -0.5)
-        priceLabel.text = "1 000 000 T"
+        priceLabel.text = post.formattedPrice()
+
+        if post.photos.count > 0 {
+            self.thumbnailView.image = UIImage(data: post.photos.first!.photoData) // TODO: Optimize the performance
+        } else {
+            thumbnailView.image = nil
+        }
+
     }
 
     private func configUI() {

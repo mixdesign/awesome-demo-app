@@ -11,7 +11,7 @@ import RealmSwift
 
 class RealmHelper {
 
-    static let version:UInt64 = 1
+    static let version:UInt64 = 2
 
     class func setup() {
         performMigration()

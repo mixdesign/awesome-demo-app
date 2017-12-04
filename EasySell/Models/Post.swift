@@ -11,6 +11,7 @@ class Post : Object {
     dynamic var postId = ""
     dynamic var title = ""
     dynamic var price:Int = 0
+    dynamic var currencySymbol:String = ""
     dynamic var isUrgent:Bool = false
     dynamic var isGiveFree:Bool = false
     dynamic var modifiedDate:Date?
@@ -19,6 +20,18 @@ class Post : Object {
 
     override static func primaryKey() -> String? {
         return "postId"
+    }
+
+    func formattedPrice() -> String {
+        return "\(price.formattedWithSeparator) \(currencySymbol)"
+    }
+
+}
+
+extension Post {
+
+    class func nextUniqueId() -> String {
+        return UUID().uuidString
     }
 
 }

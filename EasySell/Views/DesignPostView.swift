@@ -88,7 +88,6 @@ final class DesignPostView : UIView {
         field.showsVerticalScrollIndicator = false
         field.placeHolder = "Введите заголовок"
         field.trimWhiteSpaceWhenEndEditing = false
-        field.minHeight = 40
         return field
     }()
 
@@ -143,14 +142,17 @@ final class DesignPostView : UIView {
             guard let _self = self else { return }
             _self.titleLengthIndicator?.text = _self.viewModel.titleLengthIndicatorText
             _self.titleLengthIndicator?.backgroundView.backgroundColor = title.count < _self.viewModel.postTitleMaxLength ? .black : .red
+
+            self?.viewModel.updateFormValidated()
         }).addDisposableTo(bag)
 
         // If user haven't added any photo yet, then
         // hide addFirstPhotoButton & show addNextPhotoButton if title number of lines > 3
+        // `$0.count >= 0` is added to ignore the RxSwift warning regarding the minimum one parameter statement is required.
         viewModel.postTitle.asObservable().filter{ $0.count >= 0 && !self.viewModel.hasAtLeastOnePhoto.value }.subscribe(onNext: { [weak self] (title:String) in
-            let lines3 = title.components(separatedBy: "\n").count > 1
-            self?.addFirstPhotoButton.isHidden = lines3
-            self?.addNextPhotoButton.isHidden = !lines3
+            let lines2 = title.components(separatedBy: "\n").count > 1
+            self?.addFirstPhotoButton.isHidden = lines2
+            self?.addNextPhotoButton.isHidden = !lines2
         }).addDisposableTo(bag)
 
         // Price value change
@@ -161,19 +163,7 @@ final class DesignPostView : UIView {
             if price == "" {
                 self?.priceTextView.text = ""
             } else {
-                // Sanitize the price value
-                var newPrice = price.replacingOccurrences(of: " ", with: "")
-                        .replacingOccurrences(of: _self.viewModel.currencySymbol, with: "")
-                        .trimmingCharacters(in: .whitespaces)
-
-                // Format as thousands separator.
-                // This approach also prevents entering the invalid number like "00 ₸", which is automatically converted to "0 ₸"
-                guard let intPrice = Int(newPrice) else {
-                    self?.priceTextView.text = ""
-                    return
-                }
-                newPrice = intPrice.formattedWithSeparator
-
+                let newPrice = _self.viewModel.intPrice().formattedWithSeparator
                 self?.priceTextView.text = "\(newPrice) \(_self.viewModel.currencySymbol)"
 
                 // Calculate the cursor position, two positions back from the end before the " ₸".
@@ -219,6 +209,7 @@ final class DesignPostView : UIView {
             }
             self?.titleTextView.textColor = textViewColor
             self?.priceTextView.textColor = textViewColor
+
             self?.titleTextView.placeHolderColor = placeholderColor
             self?.priceTextView.placeHolderColor = placeholderColor
 
@@ -263,16 +254,9 @@ final class DesignPostView : UIView {
         }).addDisposableTo(bag)
     }
 
-    fileprivate func priceFieldPositionCursor() {
-        //
-        var position: Int = priceTextView.text.count - 2
-        if position >= 0 {
-            if position == 0 {
-                position = 1
-            }
-            if let newPosition = priceTextView.position(from: priceTextView.beginningOfDocument, offset: position) {
-                priceTextView.selectedTextRange = priceTextView.textRange(from: newPosition, to: newPosition)
-            }
+    func setPostTitle(_ title:String) {
+        delay(0.1) {
+            self.titleTextView.text = title
         }
     }
 
@@ -287,6 +271,19 @@ final class DesignPostView : UIView {
     }
 
     // MARK: UI
+
+    fileprivate func priceFieldPositionCursor() {
+        //
+        var position: Int = priceTextView.text.count - 2
+        if position >= 0 {
+            if position == 0 {
+                position = 1
+            }
+            if let newPosition = priceTextView.position(from: priceTextView.beginningOfDocument, offset: position) {
+                priceTextView.selectedTextRange = priceTextView.textRange(from: newPosition, to: newPosition)
+            }
+        }
+    }
 
     private func createBadges(_ badges:[BadgeItem]) {
 

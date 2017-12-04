@@ -51,8 +51,7 @@ final class PostsController : UIViewController {
                     self?.messageLabel?.setColor(color: .flatBlack, forSubstring: title)
                     self?.messageLabel?.snp.makeConstraints { make in
                         make.width.equalToSuperview().multipliedBy(0.6)
-                        make.centerX.equalToSuperview()
-                        make.centerY.equalToSuperview().offset(-44)
+                        make.center.equalTo(self!.list)
                     }
                 }
             }
@@ -85,7 +84,7 @@ final class PostsController : UIViewController {
         let createButton = UIButton(type: .custom)
         createButton.addTarget(self, action: #selector(tapNew), for: .touchUpInside)
         createButton.setTitle("+ Новый".uppercased(), for: .normal)
-        createButton.titleLabel?.font = .boldSystemFont(ofSize: 13)
+        createButton.titleLabel?.font = .boldSystemFont(ofSize: 14)
         createButton.titleLabel?.setLetter(spacing: 1)
         createButton.backgroundColor = .appBlue
         self.view.addSubview(createButton)
@@ -121,6 +120,8 @@ extension PostsController : UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-
+        let vc = DesignPostController()
+        vc.post = viewModel.posts[indexPath.row]
+        self.navigationController?.pushViewController(vc, animated: true)
     }
 }
