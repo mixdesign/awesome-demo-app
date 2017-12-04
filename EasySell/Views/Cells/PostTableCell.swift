@@ -9,10 +9,13 @@ import SnapKit
 
 final class PostTableCell : UITableViewCell {
 
-    static let cellHeight:CGFloat = 90
+    static let cellHeight:CGFloat = {
+        return SizeHelper.value(i5: 90, i6: 110, i6p: 120, ipad: 120)
+    }()
 
     private let titleLabel:UILabel = {
-        return UILabel.base().font(.boldSystemFont(ofSize: 18)).color(.flatBlack).multiline(lines: 2, lineBreakMode: .byTruncatingTail)
+        var fontSize:CGFloat = SizeHelper.value(i5: 18, i6: 20, i6p: 22, ipad: 22)
+        return UILabel.base().font(.boldSystemFont(ofSize: fontSize)).color(.flatBlack).multiline(lines: 2, lineBreakMode: .byTruncatingTail)
     }()
 
     private let priceLabel:UILabel = {
