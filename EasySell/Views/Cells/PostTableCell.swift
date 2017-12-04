@@ -6,8 +6,9 @@
 import Foundation
 import UIKit
 import SnapKit
+import MGSwipeTableCell
 
-final class PostTableCell : UITableViewCell {
+final class PostTableCell : MGSwipeTableCell {
 
     static let cellHeight:CGFloat = {
         return SizeHelper.value(i5: 90, i6: 110, i6p: 120, ipad: 120)

@@ -34,4 +34,13 @@ extension Post {
         return UUID().uuidString
     }
 
+    class func deletePost(_ postId:String) {
+        let realm = try! Realm()
+        if let object = realm.object(ofType: Post.self, forPrimaryKey: postId) {
+            try! realm.write {
+                realm.delete(object)
+            }
+        }
+    }
+
 }

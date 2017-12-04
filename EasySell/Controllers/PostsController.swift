@@ -8,6 +8,7 @@ import UIKit
 import SnapKit
 import RxRealm
 import RxSwift
+import MGSwipeTableCell
 
 final class PostsController : UIViewController {
 
@@ -113,7 +114,25 @@ extension PostsController : UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "PostTableCell") as! PostTableCell
-        cell.setPost(viewModel.posts[indexPath.row])
+
+        let post = viewModel.posts[indexPath.row] as! Post
+        cell.setPost(post)
+
+        // Cell Buttons
+        cell.rightSwipeSettings.transition = .static
+
+        // Delete
+        let deleteButton = MGSwipeButton(title: "", icon: #imageLiteral(resourceName: "delete-photo-button"), backgroundColor: UIColor(hexString:"CC517B")) { [weak self]
+        (sender: MGSwipeTableCell!) -> Bool in
+            // Delete realm post
+            Post.deletePost(post.postId)
+            return true
+        }
+        deleteButton.buttonWidth = PostTableCell.cellHeight
+        deleteButton.showsTouchWhenHighlighted = true
+
+        cell.rightButtons = [deleteButton]
+
         return cell
     }
 

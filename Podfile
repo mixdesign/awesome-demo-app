@@ -21,6 +21,7 @@ target 'EasySell' do
   pod 'CHIPageControl', '~> 0.1.3'
   pod 'GrowingTextView', '~> 0.5.3'
   pod 'Fusuma'
+  pod 'MGSwipeTableCell'
 end
 
 post_install do |installer|
