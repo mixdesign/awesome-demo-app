@@ -7,7 +7,7 @@ following the right approaches!
 
 <br/>
 
-**Demo video in** [YouTube](https://youtu.be/GRRI8sgdGRg target="_blank")
+**Demo video in** <a href="https://youtu.be/GRRI8sgdGRg" target="_blank">YouTube</a>
 
 <br/>
 
@@ -29,19 +29,19 @@ You are welcome!
 If you find a students around you learning the iOS development, this project will help them learn faster.
 
 ## Pods
-[GrowingTextView](https://github.com/KennethTsang/GrowingTextView){:target="_blank"}<br/>
+<a href="https://github.com/KennethTsang/GrowingTextView" target="_blank">GrowingTextView</a><br/>
 An UITextView in Swift3, Swift4 and Swift2.3. Support auto growing, placeholder and length limit.<br/>
 
-[CHIPageControl](https://github.com/ChiliLabs/CHIPageControl target="_blank")<br/>
+<a href="https://github.com/ChiliLabs/CHIPageControl" target="_blank">CHIPageControl</a><br/>
 A set of cool animated page controls written in Swift to replace boring UIPageControl.
 
-[Fusuma](https://github.com/ytakzk/Fusuma target="_blank")<br/>
+<a href="https://github.com/ytakzk/Fusuma" target="_blank">Fusuma</a><br/>
 Instagram-like photo browser and a camera feature with a few line of code in Swift.<br/>
 
-[MGSwipeTableCell](https://github.com/MortimerGoro/MGSwipeTableCell target="_blank")<br/>
+<a href="https://github.com/MortimerGoro/MGSwipeTableCell" target="_blank">MGSwipeTableCell</a><br/>
 An easy to use UITableViewCell subclass that allows to display swippable buttons with a variety of transitions.<br/>
 
-[DynamicColor](https://github.com/yannickl/DynamicColor target="_blank")<br/>
+<a href="https://github.com/yannickl/DynamicColor" target="_blank">DynamicColor</a><br/>
 Yet another extension to manipulate colors easily in Swift<br/>
 
 <br/><br/>
