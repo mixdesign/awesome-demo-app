@@ -48,5 +48,7 @@ Yet another extension to manipulate colors easily in Swift<br/>
 
 <div>
 <a href="https://goodapp.io">
+  
 ![Good App logo](https://raw.githubusercontent.com/mixdesign/awesome-demo-app/master/tools/res/goodapp-logo.png)
+
 </a>
