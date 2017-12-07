@@ -1,6 +1,6 @@
 //
 // Created by Almas Adilbek on 12/1/17.
-// Copyright (c) 2017 Good App. All rights reserved.
+// Copyright (c) 2017 GOOD/APP. All rights reserved.
 //
 
 import Foundation
@@ -53,7 +53,7 @@ final class DesignPostView : UIView {
     }()
 
     private let addFirstPhotoButton:IconTitleButton = {
-        let button = IconTitleButton(iconName: "icon-addphoto-plus", title: "Добавить фото".uppercased())
+        let button = IconTitleButton(iconName: "icon-addphoto-plus", title: "Add photo".uppercased())
         button.control.addTarget(self, action: #selector(tapAddPhoto), for: .touchUpInside)
         button.isHidden = true
         return button
@@ -86,7 +86,7 @@ final class DesignPostView : UIView {
         field.keyboardAppearance = .dark
         field.showsHorizontalScrollIndicator = false
         field.showsVerticalScrollIndicator = false
-        field.placeHolder = "Введите заголовок"
+        field.placeHolder = "Enter title"
         field.trimWhiteSpaceWhenEndEditing = false
         return field
     }()
@@ -144,16 +144,17 @@ final class DesignPostView : UIView {
             _self.titleLengthIndicator?.backgroundView.backgroundColor = title.count < _self.viewModel.postTitleMaxLength ? .black : .red
 
             self?.viewModel.updateFormValidated()
-        }).addDisposableTo(bag)
+        }).disposed(by:bag)
 
         // If user haven't added any photo yet, then
         // hide addFirstPhotoButton & show addNextPhotoButton if title number of lines > 3
         // `$0.count >= 0` is added to ignore the RxSwift warning regarding the minimum one parameter statement is required.
         viewModel.postTitle.asObservable().filter{ $0.count >= 0 && !self.viewModel.hasAtLeastOnePhoto.value }.subscribe(onNext: { [weak self] (title:String) in
+            // TODO: Bug: Calculate number of lines in other way
             let lines2 = title.components(separatedBy: "\n").count > 1
             self?.addFirstPhotoButton.isHidden = lines2
             self?.addNextPhotoButton.isHidden = !lines2
-        }).addDisposableTo(bag)
+        }).disposed(by: bag)
 
         // Price value change
         viewModel.price.asObservable().distinctUntilChanged().subscribe(onNext: { [weak self] (price:String) in
@@ -170,12 +171,12 @@ final class DesignPostView : UIView {
                 self?.priceFieldPositionCursor()
             }
 
-        }).addDisposableTo(bag)
+        }).disposed(by:bag)
 
         // Badges
         viewModel.badgeItems.asObservable().subscribe(onNext: { [weak self] (badges:[BadgeItem]) in
             self?.createBadges(badges)
-        }).addDisposableTo(bag)
+        }).disposed(by:bag)
 
         // Title length indicator
         viewModel.isTitleEditing.asObservable().skip(1).subscribe(onNext: { [weak self] (editing:Bool) in
@@ -190,7 +191,7 @@ final class DesignPostView : UIView {
             } else {
                 self?.titleLengthIndicator?.removeFromSuperview()
             }
-        }).addDisposableTo(bag)
+        }).disposed(by:bag)
 
         // Photos
 
@@ -218,7 +219,7 @@ final class DesignPostView : UIView {
             self?.addNextPhotoButton.isHidden = !hasPhoto
             self?.deletePhotoButton.isHidden = !hasPhoto
 
-        }).addDisposableTo(bag)
+        }).disposed(by:bag)
 
         // New photo appended or existing one removed.
         viewModel.photos.asObservable().subscribe(onNext: { [weak self] (photos:[UIImage]) in
@@ -237,7 +238,7 @@ final class DesignPostView : UIView {
             // Set number of pages of page control.
             self?.pageControl?.numberOfPages = photos.count
 
-        }).addDisposableTo(bag)
+        }).disposed(by:bag)
 
         // Preview
         // Note: In DesignPostController `previewSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isPreview)`
@@ -251,7 +252,7 @@ final class DesignPostView : UIView {
             // Enable / disable text view's user interaction
             self?.titleTextView.isUserInteractionEnabled = !isPreview
             self?.priceTextView.isUserInteractionEnabled = !isPreview
-        }).addDisposableTo(bag)
+        }).disposed(by:bag)
     }
 
     func setPostTitle(_ title:String) {

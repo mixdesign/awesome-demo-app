@@ -1,6 +1,6 @@
 //
 // Created by Almas Adilbek on 12/1/17.
-// Copyright (c) 2017 Good App. All rights reserved.
+// Copyright (c) 2017 GOOD/APP. All rights reserved.
 //
 
 import Foundation
@@ -27,8 +27,6 @@ final class PostsController : UIViewController {
 
     private func configEvents() {
         Observable.collection(from: viewModel.posts).subscribe(onNext: { [weak self] results in
-
-            print("collection:\(results)")
             if results.count > 0 {
 
                 // Remove message if exists.
@@ -84,7 +82,7 @@ final class PostsController : UIViewController {
         // Create Button
         let createButton = UIButton(type: .custom)
         createButton.addTarget(self, action: #selector(tapNew), for: .touchUpInside)
-        createButton.setTitle("+ Новый".uppercased(), for: .normal)
+        createButton.setTitle("+ New".uppercased(), for: .normal)
         createButton.titleLabel?.font = .boldSystemFont(ofSize: 14)
         createButton.titleLabel?.setLetter(spacing: 1)
         createButton.backgroundColor = .appBlue
@@ -129,7 +127,7 @@ extension PostsController : UITableViewDelegate, UITableViewDataSource {
             return true
         }
         deleteButton.buttonWidth = PostTableCell.cellHeight
-        deleteButton.showsTouchWhenHighlighted = true
+        deleteButton.showsTouchWhenHighlighted = false
 
         cell.rightButtons = [deleteButton]
 

@@ -1,9 +1,9 @@
 //
 //  DesignPostController.swift
-//  EasySell
+//  Awesome Demo App
 //
 //  Created by Almas Adilbek on 12/1/17.
-//  Copyright © 2017 Good App. All rights reserved.
+//  Copyright © 2017 GOOD/APP. All rights reserved.
 //
 
 import UIKit
@@ -120,7 +120,7 @@ class DesignPostController: UIViewController {
         // Pay Button
         actionButton = UIButton(type: .custom)
         actionButton.addTarget(self, action: #selector(tapAction), for: .touchUpInside)
-        actionButton.setTitle((isNew ? "Создать" : "Сохранить").uppercased(), for: .normal)
+        actionButton.setTitle((isNew ? "Create" : "Save").uppercased(), for: .normal)
         actionButton.titleLabel?.font = .boldSystemFont(ofSize: 14)
         actionButton.titleLabel?.setLetter(spacing: 1)
         actionButton.setTitleColor(.white, for: .normal)
@@ -171,7 +171,7 @@ class DesignPostController: UIViewController {
 
         // Controls
         let controlsPadding = 5
-        urgentSwitch.setTitle("Срочно".uppercased())
+        urgentSwitch.setTitle("Urgent".uppercased())
         contentView.addSubview(urgentSwitch)
         urgentSwitch.snp.makeConstraints { make in
             make.top.equalTo(postView.snp.bottom).offset(25)
@@ -179,7 +179,7 @@ class DesignPostController: UIViewController {
             make.bottom.equalToSuperview()
         }
 
-        giveFreeSwitch.setTitle("Отдам даром".uppercased())
+        giveFreeSwitch.setTitle("Free".uppercased())
         contentView.addSubview(giveFreeSwitch)
         giveFreeSwitch.snp.makeConstraints { make in
             make.top.equalTo(urgentSwitch)

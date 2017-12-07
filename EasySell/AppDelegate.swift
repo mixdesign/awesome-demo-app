@@ -1,9 +1,9 @@
 //
 //  AppDelegate.swift
-//  EasySell
+//  Awesome Demo App
 //
 //  Created by Almas Adilbek on 12/1/17.
-//  Copyright © 2017 Good App. All rights reserved.
+//  Copyright © 2017 GOOD/APP. All rights reserved.
 //
 
 import UIKit
@@ -23,9 +23,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         RealmHelper.setup()
 
         self.window = UIWindow()
-//        self.window?.rootViewController = DesignPostController()
+
         let nc = UINavigationController(rootViewController: PostsController())
         nc.isNavigationBarHidden = true
+
         self.window?.rootViewController = nc
         self.window?.frame = UIScreen.main.bounds
         self.window?.makeKeyAndVisible()

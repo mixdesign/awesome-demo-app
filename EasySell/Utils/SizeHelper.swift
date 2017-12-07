@@ -1,6 +1,6 @@
 //
 // Created by Almas Adilbek on 12/4/17.
-// Copyright (c) 2017 Good App. All rights reserved.
+// Copyright (c) 2017 GOOD/APP. All rights reserved.
 //
 
 import Foundation

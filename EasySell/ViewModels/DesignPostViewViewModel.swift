@@ -1,6 +1,6 @@
 //
 // Created by Almas Adilbek on 12/1/17.
-// Copyright (c) 2017 Good App. All rights reserved.
+// Copyright (c) 2017 GOOD/APP. All rights reserved.
 //
 
 import Foundation
@@ -58,7 +58,7 @@ final class DesignPostViewViewModel {
             } else {
                 self?.removeBadge(with: .urgent)
             }
-        }).addDisposableTo(bag)
+        }).disposed(by:bag)
 
         isGiveFree.asObservable().skip(1).distinctUntilChanged().subscribe(onNext: { [weak self] (isOn:Bool) in
             if isOn {
@@ -66,13 +66,13 @@ final class DesignPostViewViewModel {
             } else {
                 self?.removeBadge(with: .giveFree)
             }
-        }).addDisposableTo(bag)
+        }).disposed(by:bag)
 
         // Is photo added
         photos.asObservable().subscribe(onNext: { [weak self] (photos:[UIImage]) in
             self?.hasAtLeastOnePhoto.value = photos.count > 0
             self?.updateFormValidated()
-        }).addDisposableTo(bag)
+        }).disposed(by:bag)
 
     }
 
