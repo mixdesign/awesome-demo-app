@@ -8,8 +8,8 @@ import CoreGraphics
 import RxSwift
 
 private enum BadgeType:String {
-    case urgent = "Срочно"
-    case giveFree = "Отдам даром"
+    case urgent = "Urgent"
+    case giveFree = "Free"
 }
 
 struct BadgeItem {
