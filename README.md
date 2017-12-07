@@ -1,30 +1,34 @@
 ![Awesome demo app in Swift](https://raw.githubusercontent.com/mixdesign/awesome-demo-app/master/tools/res/cover.png)
 
-#The Mission
+## The Mission
 Make learning easy<br/>
 in a short way, <br/>
 following the right approaches!
 
 <br/>
+
 **Demo video in** [YouTube](https://youtu.be/GRRI8sgdGRg)
-<br/>
-![Awesome demo app screens](https://raw.githubusercontent.com/mixdesign/awesome-demo-app/master/tools/res/demo.png)
+
 <br/>
 
-#Gettings started
+![Awesome demo app screens](https://raw.githubusercontent.com/mixdesign/awesome-demo-app/master/tools/res/demo.png)
+
+<br/>
+
+## Gettings started
 1. Pull / Download the repository
 2. Run `pod install`
 3. Launch the app in Simulator or device
 
 
-#Contribution
+## Contribution
 Anyone can improve or make corrections!<br/>
-You are welcome! 👍
+You are welcome! 
 
 **Spread the education**<br/>
 If you find a students around you learning the iOS development, this project will help them learn faster.
 
-#Pods
+## Pods
 [GrowingTextView](https://github.com/KennethTsang/GrowingTextView)<br/>
 An UITextView in Swift3, Swift4 and Swift2.3. Support auto growing, placeholder and length limit.<br/>
 
