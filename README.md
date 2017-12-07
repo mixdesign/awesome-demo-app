@@ -6,9 +6,13 @@ in a short way, <br/>
 following the right approaches!
 
 <br/>
+
 **Demo video in** [YouTube](https://youtu.be/GRRI8sgdGRg)
+
 <br/>
+
 ![Awesome demo app screens](https://raw.githubusercontent.com/mixdesign/awesome-demo-app/master/tools/res/demo.png)
+
 <br/>
 
 ## Gettings started
