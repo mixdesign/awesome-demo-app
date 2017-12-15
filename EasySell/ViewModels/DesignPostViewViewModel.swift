@@ -33,17 +33,17 @@ final class DesignPostViewViewModel {
     let postTitleMaxLength = 70
     let currencySymbol = "₸"
 
-    var isPreview = Variable<Bool>(false)
-    var isTitleEditing = Variable<Bool>(false)
-    var isUrgent = Variable<Bool>(false)
-    var isGiveFree = Variable<Bool>(false)
-    var hasAtLeastOnePhoto = Variable<Bool>(false)
-    var formValidated = Variable<Bool>(false)
+    let isPreview = Variable<Bool>(false)
+    let isTitleEditing = Variable<Bool>(false)
+    let isUrgent = Variable<Bool>(false)
+    let isGiveFree = Variable<Bool>(false)
+    let hasAtLeastOnePhoto = Variable<Bool>(false)
+    let formValidated = Variable<Bool>(false)
 
-    var postTitle = Variable<String>("")
-    var price = Variable<String>("")
-    var badgeItems = Variable<[BadgeItem]>([])
-    var photos = Variable<[UIImage]>([])
+    let postTitle = Variable<String>("")
+    let price = Variable<String>("")
+    let badgeItems = Variable<[BadgeItem]>([])
+    let photos = Variable<[UIImage]>([])
 
     var titleLengthIndicatorText:String {
         return "\(postTitleMaxLength - self.postTitle.value.count)"
