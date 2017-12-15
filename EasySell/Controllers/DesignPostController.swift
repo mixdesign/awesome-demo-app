@@ -43,12 +43,12 @@ class DesignPostController: UIViewController {
     private func configEvents() {
         postView.viewModel.hasAtLeastOnePhoto.asObservable().distinctUntilChanged().subscribe(onNext: { [weak self] (hasPhoto:Bool) in
             self?.previewSwitch.switchControl.isEnabled = hasPhoto
-        }).addDisposableTo(bag)
+        }).disposed(by: bag)
 
         // Enable create button if all required form fields filled.
         postView.viewModel.formValidated.asObservable().distinctUntilChanged().subscribe(onNext: { [weak self] (validated:Bool) in
             self?.actionButton.isEnabled = validated
-        }).addDisposableTo(bag)
+        }).disposed(by:bag)
 
         // If post selected from the list.
         if let post = post {
