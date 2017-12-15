@@ -31,6 +31,7 @@ final class PostsController : UIViewController {
 
                 // Remove message if exists.
                 self?.messageLabel?.removeFromSuperview()
+                self?.messageLabel = nil
 
                 self?.list.isHidden = false
                 self?.list.reloadData()
@@ -44,7 +45,7 @@ final class PostsController : UIViewController {
                 if self?.messageLabel == nil {
                     let title = "No Posts!"
                     self?.messageLabel = UILabel.base().font(.systemFont(ofSize: 12)).color(.appGray).multiline().centered()
-                    self?.messageLabel?.text = "\(title)\nCreate your first Post tapping on \"+ Create\" button."
+                    self?.messageLabel?.text = "\(title)\nCreate your first Post tapping on \"+ New\" button."
                     self?.view.addSubview(self!.messageLabel!)
                     self?.messageLabel?.setFont(font: .boldSystemFont(ofSize: 18), forSubstring: title)
                     self?.messageLabel?.setColor(color: .flatBlack, forSubstring: title)
