@@ -41,14 +41,12 @@ class DesignPostController: UIViewController {
     }
 
     private func configEvents() {
-        postView.viewModel.hasAtLeastOnePhoto.asObservable().distinctUntilChanged().subscribe(onNext: { [weak self] (hasPhoto:Bool) in
-            self?.previewSwitch.switchControl.isEnabled = hasPhoto
-        }).disposed(by: bag)
+
+        // Enable Preview switch only if there is at least one photo.
+        postView.viewModel.hasAtLeastOnePhoto.asObservable().bind(to:previewSwitch.switchControl.rx.isEnabled).disposed(by: bag)
 
         // Enable create button if all required form fields filled.
-        postView.viewModel.formValidated.asObservable().distinctUntilChanged().subscribe(onNext: { [weak self] (validated:Bool) in
-            self?.actionButton.isEnabled = validated
-        }).disposed(by:bag)
+        postView.viewModel.formValidated.asObservable().bind(to:actionButton.rx.isEnabled).disposed(by: bag)
 
         // If post selected from the list.
         if let post = post {
@@ -65,9 +63,9 @@ class DesignPostController: UIViewController {
         }
 
         // Bind controls
-        _ = previewSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isPreview)
-        _ = urgentSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isUrgent)
-        _ = giveFreeSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isGiveFree)
+        _ = previewSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isPreview).disposed(by: bag)
+        _ = urgentSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isUrgent).disposed(by: bag)
+        _ = giveFreeSwitch.switchControl.rx.isOn.bind(to:postView.viewModel.isGiveFree).disposed(by: bag)
     }
 
     // MARK: Actions
